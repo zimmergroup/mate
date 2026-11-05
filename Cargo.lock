@@ -1456,7 +1456,7 @@ dependencies = [
 
 [[package]]
 name = "mate"
-version = "0.10.0-dev.2"
+version = "0.10.0-dev.3"
 dependencies = [
  "anyhow",
  "chrono",

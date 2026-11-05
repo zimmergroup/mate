@@ -275,12 +275,15 @@ impl CertificateService {
         profile.broker_dir = None;
         let encoded = toml::to_string_pretty(&profile)
             .context("could not serialize exported broker profile")?;
-        let mut config_file = fs::OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(staged.path().join("broker.toml"))?;
-        config_file.write_all(encoded.as_bytes())?;
-        config_file.sync_all()?;
+        {
+            // Windows cannot rename a directory while a file inside it is still open.
+            let mut config_file = fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(staged.path().join("broker.toml"))?;
+            config_file.write_all(encoded.as_bytes())?;
+            config_file.sync_all()?;
+        }
 
         let staged_path = staged.keep();
         if let Err(error) = fs::rename(&staged_path, destination) {
