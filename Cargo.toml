@@ -1,0 +1,51 @@
+[package]
+name = "mate"
+version = "0.10.0-dev.1"
+edition = "2024"
+rust-version = "1.88"
+description = "MQTT Administration & Terminal Environment"
+license = "MIT"
+repository = "https://github.com/zimmergroup/mate"
+readme = "README.md"
+keywords = ["mqtt", "tui", "terminal", "iot"]
+categories = ["command-line-utilities"]
+publish = false
+
+[dependencies]
+anyhow = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+clap = { version = "4.5", features = ["derive"] }
+crossterm = "0.29"
+directories = "6"
+keyring = "4.2.0"
+ratatui = "0.30.2"
+regex = "1.13.1"
+rpassword = "7"
+rumqttc = "0.25.1"
+rustls = "0.23"
+rustls-native-certs = "0.8.5"
+rustls-pemfile = "2.2"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+tempfile = "3"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "sync", "time"] }
+toml = "0.9"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+unicode-width = "0.2"
+x509-parser = "0.18.1"
+
+[target.'cfg(windows)'.dependencies]
+windows-acl = "0.3.0"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
+
+[dev-dependencies]
+rcgen = "0.14.10"
+
+[build-dependencies]
+winresource = "0.1.34"

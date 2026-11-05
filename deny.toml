@@ -1,0 +1,51 @@
+[graph]
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-pc-windows-gnu",
+    "aarch64-apple-darwin",
+]
+
+[advisories]
+version = 2
+# Reviewed by hand; remove an entry as soon as the dependency that causes it is updated.
+ignore = [
+    # rumqttc 0.25.1 links rustls-webpki 0.102 only for an error type. MATE verifies server certificates
+    # with rustls 0.23, which uses rustls-webpki 0.103 (not affected).
+    { id = "RUSTSEC-2026-0049", reason = "rustls-webpki 0.102 is not used for verification" },
+    { id = "RUSTSEC-2026-0098", reason = "rustls-webpki 0.102 is not used for verification" },
+    { id = "RUSTSEC-2026-0099", reason = "rustls-webpki 0.102 is not used for verification" },
+    { id = "RUSTSEC-2026-0104", reason = "rustls-webpki 0.102 is not used for verification" },
+    { id = "RUSTSEC-2026-0382", reason = "rustls-webpki 0.102 is not used for verification" },
+    # Maintenance notices, no known vulnerability: PEM parsing (also used by rumqttc) and the D-Bus stack of the Linux keyring.
+    { id = "RUSTSEC-2025-0134", reason = "rustls-pemfile is unmaintained; no vulnerability" },
+    { id = "RUSTSEC-2026-0370", reason = "zvariant is unmaintained; reached through the keyring crate" },
+    { id = "RUSTSEC-2026-0371", reason = "zbus_names is unmaintained; reached through the keyring crate" },
+    { id = "RUSTSEC-2026-0372", reason = "zvariant_derive is unmaintained; reached through the keyring crate" },
+]
+
+[licenses]
+version = 2
+confidence-threshold = 0.8
+allow = [
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-3-Clause",
+    "BSL-1.0",
+    "CC0-1.0",
+    "ISC",
+    "MIT",
+    "MIT-0",
+    "MPL-2.0",
+    "Unicode-3.0",
+    "Unicode-DFS-2016",
+    "Unlicense",
+    "WTFPL",
+    "Zlib",
+]
+
+[bans]
+multiple-versions = "warn"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

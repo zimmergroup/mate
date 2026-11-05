@@ -1,0 +1,19 @@
+MATE is released under the MIT license (see LICENSE). It includes the following third-party
+software; the license texts below belong to those components.
+
+{{#each overview}}
+{{count}} x {{{name}}}
+{{/each}}
+
+{{#each licenses}}
+================================================================================
+{{{name}}}
+
+Used by:
+{{#each used_by}}
+  - {{crate.name}} {{crate.version}}{{#if crate.repository}} ({{{crate.repository}}}){{/if}}
+{{/each}}
+
+{{{text}}}
+
+{{/each}}

@@ -1,0 +1,4 @@
+[general]
+theme = "dark"
+refresh_rate = 15
+default_broker = "local"

@@ -1,0 +1,12 @@
+id = "local"
+name = "Local"
+description = "Local Mosquitto without TLS"
+host = "localhost"
+port = 1883
+protocol = "mqtt311"
+client_id = "mate-local"
+auto_connect = false
+
+[[subscriptions]]
+topic = "#"
+qos = 0

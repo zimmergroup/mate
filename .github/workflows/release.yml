@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check tag, Cargo.toml version and changelog
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          VERSION="${TAG#v}"
+          CRATE_VERSION="$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)"
+          if [ "$VERSION" != "$CRATE_VERSION" ]; then
+            echo "Tag $TAG does not match Cargo.toml version $CRATE_VERSION" >&2
+            exit 1
+          fi
+          NOTES="$(awk -v v="$VERSION" 'index($0, "## " v " ") == 1 {found = 1; next} /^## / && found {exit} found' CHANGELOG.md)"
+          if [ -z "$(printf '%s' "$NOTES" | tr -d '[:space:]')" ]; then
+            echo "CHANGELOG.md has no section '## $VERSION - <date>'" >&2
+            exit 1
+          fi
+          {
+            echo "Install from source: \`cargo install --git https://github.com/${GITHUB_REPOSITORY}.git --tag ${TAG} --locked\`"
+            echo
+            printf '%s\n' "$NOTES"
+          } > release-notes.md
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # master
+        with:
+          toolchain: "1.94"
+          targets: x86_64-pc-windows-gnu
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - run: sudo apt-get update && sudo apt-get install --yes gcc-mingw-w64-x86-64 zip
+
+      - run: cargo test --locked
+      - run: command -v cargo-about || cargo install cargo-about --locked --features cli
+      - run: cargo about generate --locked --fail about.hbs -o THIRD-PARTY-LICENSES.txt
+      - run: cargo build --locked --release
+      - run: cargo build --locked --release --target x86_64-pc-windows-gnu
+
+      - name: Package
+        run: |
+          LINUX="mate-${VERSION}-x86_64-linux"
+          mkdir "$LINUX"
+          cp target/release/mate LICENSE THIRD-PARTY-LICENSES.txt README.md "$LINUX/"
+          tar -czf "$LINUX.tar.gz" "$LINUX"
+          sha256sum "$LINUX.tar.gz" > "$LINUX.tar.gz.sha256"
+          WINDOWS="mate-${VERSION}-x86_64-windows"
+          mkdir "$WINDOWS"
+          cp target/x86_64-pc-windows-gnu/release/mate.exe LICENSE THIRD-PARTY-LICENSES.txt README.md "$WINDOWS/"
+          zip -qr "$WINDOWS.zip" "$WINDOWS"
+          sha256sum "$WINDOWS.zip" > "$WINDOWS.zip.sha256"
+
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG" \
+            --title "MATE $TAG" \
+            --notes-file release-notes.md \
+            "mate-${VERSION}-x86_64-linux.tar.gz" "mate-${VERSION}-x86_64-linux.tar.gz.sha256" \
+            "mate-${VERSION}-x86_64-windows.zip" "mate-${VERSION}-x86_64-windows.zip.sha256"
