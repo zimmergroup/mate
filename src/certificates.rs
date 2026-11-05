@@ -566,6 +566,18 @@ fn create_real_directory(path: &Path) -> Result<()> {
     }
 }
 
+/// Links owned by root, such as `/var` and `/tmp` on macOS, cannot be planted by another user.
+#[cfg(unix)]
+fn is_system_symlink(metadata: &fs::Metadata) -> bool {
+    use std::os::unix::fs::MetadataExt;
+    metadata.uid() == 0
+}
+
+#[cfg(not(unix))]
+fn is_system_symlink(_metadata: &fs::Metadata) -> bool {
+    false
+}
+
 fn reject_symlink_components(path: &Path) -> Result<()> {
     let absolute = if path.is_absolute() {
         path.to_path_buf()
@@ -577,7 +589,7 @@ fn reject_symlink_components(path: &Path) -> Result<()> {
         current.push(component.as_os_str());
         match fs::symlink_metadata(&current) {
             Ok(metadata) => ensure!(
-                !metadata.file_type().is_symlink(),
+                !metadata.file_type().is_symlink() || is_system_symlink(&metadata),
                 "certificate import source traverses a symlink: {}",
                 current.display()
             ),
@@ -935,5 +947,11 @@ mod tests {
             fs::metadata(imported).unwrap().permissions().mode() & 0o777,
             0o600
         );
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn system_symlinks_such_as_var_are_allowed_in_paths() {
+        assert!(super::reject_symlink_components(std::path::Path::new("/var")).is_ok());
     }
 }
