@@ -46,8 +46,6 @@ jobs:
   test:
     name: test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    # Windows and macOS have not been used by hand yet; their failures do not block a merge.
-    continue-on-error: ${{ matrix.os != 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
