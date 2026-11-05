@@ -4350,7 +4350,8 @@ mod tests {
         let changelog = screen(&mut state, 100, 40);
         assert!(changelog.contains("[4 Changelog]") && changelog.contains("Added"));
         press(&mut state, "5");
-        let about = screen(&mut state, 100, 40);
+        // Wide enough for a long Windows temp path, which would otherwise be split in the middle of the file name.
+        let about = screen(&mut state, 160, 40);
         assert!(about.contains(env!("CARGO_PKG_VERSION")) && about.contains("MIT"));
         assert!(about.contains("ui-state.toml"));
 
