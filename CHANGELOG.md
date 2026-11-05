@@ -2,12 +2,10 @@
 
 All notable changes to MATE are recorded here. Entries describe behavior that is implemented and tested; see [ROADMAP.md](ROADMAP.md) for what is still open.
 
-## Unreleased
+## 0.10.0 - 2026-11-05
 
 ### Changed
 
-- Fixed on macOS: certificate import and export refused paths below `/var` or `/tmp` (for example the temporary directory) as "traverses a symlink". Symlinks owned by root are now accepted as parts of a path; a symlink created by the user is still refused.
-- Fixed on Windows: `mate broker export-certificates` failed with "Access is denied" because the bundle directory was renamed while its `broker.toml` was still open.
 - The copyright holder named in `LICENSE` is Zimmer Group; the README introduces MATE with its full name.
 - The project moved to GitHub; CI and releases run on GitHub Actions (formatting, Clippy, tests on Linux, Windows and macOS, a Linux release build and a Windows GNU cross-build). Tests and documentation use invented names instead of names from real installations.
 
@@ -16,6 +14,11 @@ All notable changes to MATE are recorded here. Entries describe behavior that is
 - Release archives contain `THIRD-PARTY-LICENSES.txt` (licenses of all built-in crates, generated with `cargo about`). CI checks dependency licenses and security advisories with `cargo deny`; the advisories that do not affect MATE are listed with reasons in `deny.toml`.
 - `SECURITY.md`, `CONTRIBUTING.md` and Dependabot for Cargo and GitHub Actions.
 - `demo/demo.sh`: two Mosquitto brokers in Docker (plain MQTT 3.1.1 and TLS with MQTT 5) fed with invented plant data and a separate MATE configuration, for screenshots and for trying MATE out.
+
+### Fixed
+
+- macOS: certificate import and export refused paths below `/var` or `/tmp` (for example the temporary directory) as "traverses a symlink". Symlinks owned by root are now accepted as parts of a path; a symlink created by the user is still refused.
+- Windows: `mate broker export-certificates` failed with "Access is denied" because the bundle directory was renamed while its `broker.toml` was still open.
 
 ## 0.9.0 - 2026-11-05
 
