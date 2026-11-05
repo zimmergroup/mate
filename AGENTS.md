@@ -15,7 +15,7 @@
 - `main.rs` owns CLI startup, tracing, terminal lifecycle and the event loop that tags each broker's `BrokerEvent`s with its ID and a generation (events of a replaced connection are dropped), moves them into `UiState`, spawns/stops one broker task per connection for `UiAction`s, appends messages to the `.mqttlog` files when `UiState::log_directory` says so, publishes the batches `UiState::replay_batch` hands out, and writes clipboard data (system tool, OSC 52 fallback).
 - MQTT I/O belongs in its own module and must communicate with the UI through bounded channels. Never do payload formatting or rendering in the MQTT event loop.
 
-Keep domain types independent of Ratatui. Store usernames and keyring references, never passwords or private-key contents, in TOML. Imported private keys must use platform-specific secure permissions; do not assume POSIX permission bits on Windows. Do not follow symlinks during certificate imports. Relative certificate paths are rooted at the profile directory, never the process working directory. Avoid platform-specific assumptions in shared code.
+Keep domain types independent of Ratatui. Store usernames and keyring references, never passwords or private-key contents, in TOML. Imported private keys must use platform-specific secure permissions; do not assume POSIX permission bits on Windows. Do not follow symlinks during certificate imports (links owned by root, such as `/var` on macOS, are allowed). Relative certificate paths are rooted at the profile directory, never the process working directory. Avoid platform-specific assumptions in shared code.
 
 ## Conventions
 

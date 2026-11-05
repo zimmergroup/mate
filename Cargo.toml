@@ -1,6 +1,6 @@
 [package]
 name = "mate"
-version = "0.10.0-dev.3"
+version = "0.10.0-dev.4"
 edition = "2024"
 rust-version = "1.88"
 description = "MQTT Administration & Terminal Environment"
