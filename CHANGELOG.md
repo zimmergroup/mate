@@ -6,6 +6,7 @@ All notable changes to MATE are recorded here. Entries describe behavior that is
 
 ### Changed
 
+- Fixed on Windows: `mate broker export-certificates` failed with "Access is denied" because the bundle directory was renamed while its `broker.toml` was still open.
 - The copyright holder named in `LICENSE` is Zimmer Group; the README introduces MATE with its full name.
 - The project moved to GitHub; CI and releases run on GitHub Actions (formatting, Clippy, tests on Linux, Windows and macOS, a Linux release build and a Windows GNU cross-build). Tests and documentation use invented names instead of names from real installations.
 
