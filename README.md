@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/zimmergroup/mate/actions/workflows/ci.yml/badge.svg)](https://github.com/zimmergroup/mate/actions/workflows/ci.yml)
 
-MQTT Administration & Terminal Environment is a keyboard-driven terminal client for browsing MQTT topics and inspecting live payloads.
+**MATE** (MQTT Administration & Terminal Environment) is a keyboard-driven terminal client for browsing MQTT topics and inspecting live payloads.
 
 ## Status
 
